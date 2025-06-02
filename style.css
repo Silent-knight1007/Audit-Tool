@@ -1,0 +1,29 @@
+body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+    }
+    .navbar {
+      background-color: #004085;
+    }
+    .navbar-item, .navbar-brand {
+      color: #fff;
+    }
+    .content-section {
+      display: none;
+      padding: 2rem;
+    }
+    .is-hidden {
+      display: none;
+    }
+    .table-container {
+      margin-top: 2rem;
+    }
+    .button.is-warning {
+  margin-right: 0.5rem;
+}
+.selected-row {
+  background-color: #ffeeba !important;
+}
+.section-spacing {
+  margin-bottom: 40px;
+}

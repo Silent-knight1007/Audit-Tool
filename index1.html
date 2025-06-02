@@ -1,0 +1,167 @@
+<!--26-05-2025-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onextel Audit Tool</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="style2.css"/>
+</head>
+<body onload="showSection('dashboard')">
+
+  <nav class="navbar is-dark">
+    <div class="navbar-brand">
+      <a class="navbar-item">Onextel</a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" onclick="showSection('dashboard')">Dashboard</a>
+        <a class="navbar-item" onclick="showSection('audit-tool')">Audit Tool</a>
+        <a class="navbar-item" onclick="showSection('audit-plan')">Audit Plan</a>
+        <a class="navbar-item" onclick="showSection('non-conformity')">Non-Conformity</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="dashboard" class="content-section box section-spacing">
+    <div class="container">
+      <h1 class="title">Welcome to Onextel Dashboard</h1>
+    </div>
+  </section>
+
+  <section id="audit-tool" class="content-section box section-spacing">
+    <div class="container">
+      <h1 class="title">About Onextel Audit Tool</h1>
+      <p>This tool is used for tracking and managing audit plans and non-conformities within Onextel systems.</p>
+    </div>
+  </section>
+
+  <!-- ================= AUDIT PLAN ================= -->
+  <section id="audit-plan" class="content-section box section-spacing">
+    <div class="container">
+      <h2 class="title is-4">Audit Plan</h2>
+      <div class="table-container">
+        <h2 class="title is-5">Saved Audits</h2>
+        <table class="table is-striped is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>Audit ID</th>
+              <th>Audit Type</th>
+              <th>Standards</th>
+              <th>Lead Auditor</th>
+              <th>Location</th>
+              <th>Audit Team</th>
+              <th>Planned Date</th>
+              <th>Actual Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="audit-table-body"></tbody>
+        </table>
+      </div>
+      <button class="button is-link mb-4" onclick="createNewAudit()">Create New Audit</button>
+      <div id="audit-form-container" style="display: none;">
+        <form id="audit-form">
+          <div class="column is-one-third">
+              <label class="label">Audit ID</label>
+              <div class="control">
+              <input class="input" type="text" id="audit-id" name="auditId" readonly>
+            </div>
+          </div>
+            <div class="column is-one-third">
+              <label class="label">Audit Type</label>
+              <div class="select is-fullwidth">
+                <select id="audit-type">
+                  <option>Internal</option>
+                  <option>External</option>
+                </select>
+              </div>
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Standards</label>
+              <select id="standards" multiple>
+                <option value="ISO 9001 : 2015">ISO 9001 : 2015</option>
+                <option value="ISO 27001 : 2023">ISO 27001 : 2023</option>
+                <option value="ISO 27701 : 2019">ISO 27701 : 2019</option>
+                <option value="ISO 22301 : 2019">ISO 22301 : 2019</option>
+                <option value="ISO 27017 : 2015">ISO 27017 : 2015</option>
+                <option value="ISO 27018 : 2015">ISO 27018 : 2015</option>
+              </select>
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Lead Auditor</label>
+              <input class="input" type="text" id="lead-auditor" />
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Location</label>
+              <input class="input" type="text" id="location" />
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Audit Team</label>
+              <input class="input" type="text" id="audit-team" />
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Planned Date</label>
+              <input class="input" type="date" id="planned-date" />
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Actual Date</label>
+              <input class="input" type="date" id="actual-date" />
+            </div>
+            <div class="column is-one-third">
+              <label class="label">Status</label>
+              <div class="select is-fullwidth">
+                <select id="status">
+                  <option>Planned</option>
+                  <option>Executed</option>
+                  <option>Completed</option>
+                </select>
+              </div>
+            </div>
+        </form>
+      </div>
+        </div>
+        <div id="action-buttons" style="display: flex; gap: 10px; margin: 20px 0;">
+        <button id="saveBtn" class="button is-success" onclick="saveAudit()">Save</button>
+        <button id="editBtn" class="button is-warning" onclick="editSelectedAudit()" disabled>Edit</button>
+        <button id="deleteBtn" class="button is-danger" onclick="deleteSelectedAudit()" disabled>Delete</button>
+      </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= NON-CONFORMITY ================= -->
+  <section id="non-conformity" class="content-section box section-spacing">
+    <div class="container">
+      <h2 class="title is-4">Non-Conformity</h2>
+      <button class="button is-link mb-4" onclick="createNewNC()">Create New Non-Conformity</button>
+      <form id="nc-form" style="display:none;">
+        <div class="columns is-multiline">
+          <div class="column is-one-third"><label class="label">Audit ID</label><input class="input" type="text" id="nc-audit-id" /></div>
+          <div class="column is-one-third"><label class="label">Non-Conformity ID</label><input class="input" type="text" id="nc-id" readonly /></div>
+          <div class="column is-one-third"><label class="label">Description</label><input class="input" type="text" id="description" /></div>
+          <div class="column is-one-third"><label class="label">Clause No</label><input class="input" type="text" id="clause" /></div>
+          <div class="column is-one-third"><label class="label">NC Type</label><div class="select is-fullwidth"><select id="nc-type" onchange="updateDueDate()"><option value="">Select</option><option value="Minor">Minor</option><option value="Major">Major</option></select></div></div>
+          <div class="column is-one-third"><label class="label">Due Date</label><input class="input" type="date" id="due-date" /></div>
+        </div>
+        <button type="button" class="button is-success" onclick="saveNC()">Save</button>
+      </form>
+      <div class="table-container mt-5">
+        <table class="table is-striped is-fullwidth">
+          <thead><tr><th>NC ID</th><th>Audit ID</th><th>Description</th><th>Clause</th><th>NC Type</th><th>Due Date</th></tr></thead>
+          <tbody id="nc-table-body"></tbody>
+        </table>
+        <div id="action-buttons" style="display: flex; gap: 10px; margin: 20px 0;">
+        <button id="saveBtn" class="button is-success" onclick="saveAudit()">Save</button>
+        <button id="editBtn" class="button is-warning" onclick="editSelectedAudit()" disabled>Edit</button>
+        <button id="deleteBtn" class="button is-danger" onclick="deleteSelectedAudit()" disabled>Delete</button>
+      </div>
+      </div>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="script2.js"></script>
+</body>
+</html>
+ 
