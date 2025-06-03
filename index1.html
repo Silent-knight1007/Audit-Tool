@@ -187,7 +187,7 @@
             </button>
 
             <button id="select-all-btn" class="button-common blue-button">
-             Select All
+             <label><input type="checkbox" id="nc-select-all" /> Select All</label>
             </button>
 
            <button id="delete-selected-btn" class="button-common red-button" onclick="deleteSelectedNC()">
@@ -196,10 +196,11 @@
 
 
         </div>
-        <h2 class="title is-5">Saved Non-Confirmities</h2>
+        <h2 class="title is-5">Saved Non-Conformities</h2>
         <table class="table is-striped is-fullwidth">
           <thead>
             <tr>
+              <th></th>
               <th>NC ID</th>
               <th>Audit ID</th>
               <th>Description</th>

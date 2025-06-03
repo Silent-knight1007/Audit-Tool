@@ -40,7 +40,7 @@ if (
   !document.getElementById('actual-date').value ||
   !document.getElementById('status').value
 ) {
-  alert("Please fill all fields before updating.");
+  alert("Please fill all required fields before saving.");
   return;
 }
   const auditId = document.getElementById('audit-id').value;
@@ -371,7 +371,6 @@ function updateNCAuditDropdown() {
     option.textContent = auditId;
     dropdown.appendChild(option);
   }
-  console.log("Audit ID to add to NC:", auditId);
 
 }
 
@@ -389,6 +388,32 @@ function editNCFromLink(link) {
   selectNCRowForEdit(row);
 }
 
+function updateNC() {
+  if (!selectedNCRow) return;
+
+  const cells = selectedNCRow.querySelectorAll('td');
+  // cells[0] is the checkbox cell, so start from cells[1]
+  cells[1].innerHTML = `<a href="#" onclick="editNCFromLink(this)">${document.getElementById('nc-id').value}</a>`;
+  cells[2].innerText = document.getElementById('nc-audit-id').value;
+  cells[3].innerText = document.getElementById('description').value;
+  cells[4].innerText = document.getElementById('clause').value;
+  cells[5].innerText = document.getElementById('nc-type').value;
+  cells[6].innerText = document.getElementById('due-date').value;
+  cells[7].innerText = document.getElementById('nc-department').value;
+  cells[8].innerText = document.getElementById('nc-Responsible-Person').value;
+  cells[9].innerText = document.getElementById('nc-Responsible-Person-Email').value;
+  cells[10].innerText = document.getElementById('Location').value;
+  cells[11].innerText = document.getElementById('corrective-action').value;
+  cells[12].innerText = document.getElementById('preventive-action').value;
+  cells[13].innerText = document.getElementById('root-cause').value;
+  cells[14].innerText = document.getElementById('status-nc').value;
+
+  selectedNCRow = null;
+  document.getElementById('deleteBtnNC').disabled = true;
+  document.getElementById('nc-form').reset();
+  document.getElementById('nc-form-container').style.display = 'none';
+}
+
 function selectNCRowForEdit(row) {
   selectedNCRow = row;
   const cells = row.querySelectorAll('td');
@@ -403,7 +428,104 @@ function selectNCRowForEdit(row) {
   document.getElementById('deleteBtnNC').disabled = false;
 }
 
+function editNCRow(button) {
+    const row = button.closest('tr');
+    const cells = row.querySelectorAll('td');
+
+    // Show the NC form
+    document.getElementById('nc-form-container').style.display = 'block';
+
+    // Set global selected row for later update
+    selectedNCRow = row;
+
+    // Fill form fields from the row's cells
+    document.getElementById('nc-id').value = cells[1].innerText;
+    document.getElementById('nc-audit-id').value = cells[2].innerText;
+    document.getElementById('description').value = cells[3].innerText;
+    document.getElementById('clause').value = cells[4].innerText;
+    document.getElementById('nc-type').value = cells[5].innerText;
+    document.getElementById('due-date').value = cells[6].innerText;
+    document.getElementById('nc-department').value = cells[7].innerText;
+    document.getElementById('nc-Responsible-Person').value = cells[8].innerText;
+    document.getElementById('nc-Responsible-Person-Email').value = cells[9].innerText;
+    document.getElementById('Location').value = cells[10].innerText;
+    document.getElementById('corrective-action').value = cells[11].innerText;
+    document.getElementById('preventive-action').value = cells[12].innerText;
+    document.getElementById('root-cause').value = cells[13].innerText;
+    document.getElementById('status-nc').value = cells[14].innerText;
+
+    // Enable delete button if you have one
+    document.getElementById('deleteBtnNC').disabled = false;
+}
+
+function cancelNC() {
+  if (confirm("Are you sure you want to cancel filling this form?")) {
+    document.getElementById("nc-form").reset();
+    document.getElementById("nc-form-container").style.display = "none";
+    selectedAuditRow = null;
+    document.getElementById('saveBtn').innerText = 'Save';
+  }
+}
+
+function cancelEdit() {
+  // Hide the form
+  document.getElementById('ncFormContainer').style.display = 'none';
+
+  // Clear all input fields
+  clearNCForm();
+
+  // Stop editing any row
+  selectedNCRow = null;
+
+  // Change the Save button text back to "Save"
+  document.getElementById('saveBtn').innerText = 'Save';
+
+  console.log('Cancelled edit, form reset.');
+}
+
+function showNCForm() {
+  // Show the form
+  document.getElementById('ncFormContainer').style.display = 'block';
+
+  // Clear form fields
+  clearNCForm();
+
+  // Stop editing anything
+  selectedAuditRow = null;
+
+  // Change Save button to "Save"
+  document.getElementById('saveBtn').innerText = 'Save';
+
+  console.log('Form opened for new nc.');
+}
+
+function handleCheckboxChange() {
+  const anyChecked = document.querySelectorAll(".nc-checkbox:checked").length > 0;
+  document.getElementById("delete-selected-btn").disabled = !anyChecked;
+}
+
 function saveNC() {
+
+if (
+  !document.getElementById('nc-audit-id').value ||
+  !document.getElementById('nc-id').value ||
+  !document.getElementById('description').value ||
+  !document.getElementById('clause').value ||
+  !document.getElementById('nc-type').value ||
+  !document.getElementById('due-date').value ||
+  !document.getElementById('nc-department').value ||
+  !document.getElementById('nc-Responsible-Person').value||
+  !document.getElementById('nc-Responsible-Person-Email').value||
+  !document.getElementById('Location').value||
+  !document.getElementById('corrective-action').value||
+  !document.getElementById('preventive-action').value||
+  !document.getElementById('root-cause').value||
+  !document.getElementById('status-nc').value
+) 
+{
+  alert("Please fill all  required fields before saving.");
+  return;
+}
   const ncId = document.getElementById('nc-id').value;
   const auditId = document.getElementById('nc-audit-id').value;
   const description = document.getElementById('description').value;
@@ -419,36 +541,64 @@ function saveNC() {
   const rootcause = document.getElementById('root-cause').value;
   const status = document.getElementById('status-nc').value;
 
+  // ✅ Update existing row
+  if (selectedNCRow) {
+    const cells = selectedNCRow.querySelectorAll('td');
 
-  if (!auditId || !ncId || !description || !clause || !type || !dueDate ||!department ||!responsibleperson ||!responsiblepersonemail ||!location ||!correctiveaction ||!preventiveaction ||!rootcause ||!status) {
-    alert("Please fill in all required fields.");
+    // NC ID (cell 1 - skip checkbox cell 0)
+    cells[1].innerHTML = `<a href="#" onclick="editNCFromLink(this)">${ncId}</a>`;
+    
+    // Audit ID (cell 2)
+    cells[2].innerText = auditId;
+    
+    // Description (cell 3)
+    cells[3].innerText = description;
+    
+    // Clause No (cell 4)
+    cells[4].innerText = clause;
+    
+    // NC-Type (cell 5)
+    cells[5].innerText = type;
+    
+    // Due Date (cell 6)
+    cells[6].innerText = dueDate;
+    
+    // Department (cell 7)
+    cells[7].innerText = department;
+    
+    // Responsible Person (cell 8)
+    cells[8].innerText = responsibleperson;
+    
+    // Responsible Person Email (cell 9)
+    cells[9].innerText = responsiblepersonemail;
+    
+    // Location (cell 10)
+    cells[10].innerText = location;
+    
+    // Corrective Action (cell 11)
+    cells[11].innerText = correctiveaction;
+    
+    // Preventive Action (cell 12)
+    cells[12].innerText = preventiveaction;
+    
+    // Root Cause (cell 13)
+    cells[13].innerText = rootcause;
+    
+    // Status (cell 14)
+    cells[14].innerText = status;
+
+    selectedNCRow = null;
+    document.getElementById('nc-form').reset();
+    document.getElementById('nc-form-container').style.display = 'none';
+    document.getElementById('saveBtn').innerText = 'Save';
+    updateNCAuditDropdown();
     return;
   }
-  // ✅ If editing, update the existing row
-if (selectedNCRow) {
-    const cells = selectedNCRow.querySelectorAll('td');
-    cells[0].innerHTML = `<a href="#" onclick="editNCFromLink(this)">${ncId}</a>`;
-    cells[1].innerText = auditId;
-    cells[2].innerText = description;
-    cells[3].innerText = clause;
-    cells[4].innerText = type;
-    cells[5].innerText = dueDate;
-    cells[6].innerText = department;
-    cells[7].innerText = responsible-person;
-    cells[8].innerText = responsible-person-email;
-    cells[9].innerText = location;
-    cells[10].innerText = corrective-action;
-    cells[11].innerText = preventive-action;
-    cells[12].innerText = root-cause;
-    cells[13].innerText = status;
-    
-    selectedNCRow = null;
-    document.getElementById('deleteBtnNC').disabled = true;
-} 
-else {
-    // ✅ Create a new row
+  // ✅ Create new row
+  else {
     const row = document.createElement('tr');
     row.innerHTML = `
+      <td><input type="checkbox" class="nc-checkbox"></td>
       <td><a href="#" onclick="editNCFromLink(this)">${ncId}</a></td>
       <td>${auditId}</td>
       <td>${description}</td>
@@ -464,19 +614,55 @@ else {
       <td>${rootcause}</td>
       <td>${status}</td>
     `;
+    document.getElementById('nc-table-body').appendChild(row);
+  }
     row.onclick = () => selectNCRowForEdit(row);
     document.getElementById('nc-table-body').appendChild(row);
+    // Attach event listener to the checkbox inside this row
+    const checkbox = row.querySelector('input[name="nc-checkbox"]');
+    checkbox.addEventListener('change', updateDeleteButtonState);
     ncCounter++;
+
+    generateNCId();
+    selectedNCRow = null;
+    document.getElementById('nc-form').reset();
+    document.getElementById('nc-form-container').style.display = 'none';
+    document.getElementById('saveBtn').innerText = 'Save';
+    updateNCAuditDropdown(); 
 }
 
-if (!auditId) {
-  alert("Please select an Audit ID before saving Non-Conformity.");
-  return;
+function updateDeleteButtonState() {
+  const checkboxes = document.querySelectorAll('input[name="nc-checkbox"]');
+  const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+  document.getElementById('delete-selected-btn').disabled = !anyChecked;
+
+  // Also update the Select All checkbox state (checked, unchecked, indeterminate)
+  const selectAllCheckbox = document.getElementById('nc-select-all');
+  if (!selectAllCheckbox) return;
+  const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+  const noneChecked = Array.from(checkboxes).every(cb => !cb.checked);
+  if (allChecked) {
+    selectAllCheckbox.checked = true;
+    selectAllCheckbox.indeterminate = false;
+  } else if (noneChecked) {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.indeterminate = false;
+  } else {
+    selectAllCheckbox.checked = false;
+    selectAllCheckbox.indeterminate = true;
+  }
 }
 
-generateNCId();
-  document.getElementById('nc-form').reset();
-  document.getElementById('nc-form-container').style.display = 'none';
+function deleteSelectedNC() {
+  const checkboxes = document.querySelectorAll('.nc-checkbox:checked');
+  if (checkboxes.length === 0) {
+    alert("Please select at least one NC to delete.");
+    return;
+  }
+  if (!confirm("Are you sure you want to delete the selected NC(s)?")) return;
+  checkboxes.forEach(cb => cb.closest('tr').remove());
+  // Optionally, uncheck master checkbox
+  document.getElementById('nc-select-all').checked = false;
 }
 
 function deleteNC() {
@@ -486,6 +672,12 @@ function deleteNC() {
     document.getElementById('deleteBtnNC').disabled = true;
     document.getElementById('nc-form').reset();
     document.getElementById('nc-form-container').style.display = 'none';
+  }
+}
+
+function deleteNCRow(button) {
+  if (confirm("Are you sure you want to delete this Non-Conformity?")) {
+    button.closest('tr').remove();
   }
 }
 
@@ -506,6 +698,11 @@ document.getElementById('select-all-checkbox').addEventListener('change', functi
   const checkboxes = document.querySelectorAll('input[name="audit-checkbox"]');
   checkboxes.forEach(cb => cb.checked = checked);
   updateDeleteButtonState();
+});
+
+document.getElementById('nc-select-all').addEventListener('change', function() {
+  const checked = this.checked;
+  document.querySelectorAll('.nc-checkbox').forEach(cb => cb.checked = checked);
 });
 
 

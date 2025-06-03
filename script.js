@@ -13,6 +13,8 @@ function showSection(id) {
       document.getElementById(id).style.display = 'block';
     }
 
+    // AUDIT-PLAN-JAVASCRIPT----------->
+
     function createNewAudit() {
   const form = document.getElementById('audit-form-container');
   const isVisible = form.style.display === 'block';
@@ -26,8 +28,7 @@ function showSection(id) {
   document.getElementById('saveBtn').innerText = selectedAuditRow ? 'Update' : 'Save';
 }
 
-
-  function saveAudit() {
+function saveAudit() {
 
 if (
   !document.getElementById('audit-id').value ||
@@ -39,11 +40,10 @@ if (
   !document.getElementById('planned-date').value ||
   !document.getElementById('actual-date').value ||
   !document.getElementById('status').value
-) {
+) {  
   alert("Please fill all fields before updating.");
   return;
 }
-
   const auditId = document.getElementById('audit-id').value;
   const auditType = document.getElementById('audit-type').value;
   const standards = Array.from(document.getElementById('standards').selectedOptions).map(o => o.value).join(', ');
@@ -104,9 +104,8 @@ if (
     updateNCAuditDropdown();
     return;
 }
-
-
-  } else {
+  } 
+else {
     // ✅ Create new row
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -126,7 +125,6 @@ if (
     // Attach event listener to the checkbox inside this row
     const checkbox = row.querySelector('input[name="audit-checkbox"]');
     checkbox.addEventListener('change', updateDeleteButtonState);
-
     auditCounter++; // ✅ Only increase on new row
   }
 
@@ -175,39 +173,6 @@ function handleCheckboxChange() {
   document.getElementById("delete-selected-btn").disabled = !anyChecked;
 }
 
-/*const data = [
-      { id: 'AUD001', date: '2024-06-01' },
-      { id: 'AUD002', date: '2024-06-02' },
-      { id: 'AUD003', date: '2024-06-03' }
-    ];
-
-    const tbody = document.getElementById('audit-table-body');
-
-    data.forEach((item, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="checkbox" class="rowCheckbox" data-index="${index}"></td>
-        <td>${item.id}</td>
-        <td>${item.date}</td>
-      `;
-      tbody.appendChild(row);
-    });*/
-
-    /*const selectAllCheckbox = document.getElementById('select-all-btn');
-
-    selectAllCheckbox.addEventListener('change', function () {
-      const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
-      rowCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-    });
-
-    document.addEventListener('change', function (e) {
-      if (e.target.classList.contains('rowCheckbox')) {
-        const allCheckboxes = document.querySelectorAll('.rowCheckbox');
-        const allChecked = Array.from(allCheckboxes).every(cb => cb.checked);
-        selectAllCheckbox.checked = allChecked;
-      }
-    });*/
-
 function cancelAudit() {
   if (confirm("Are you sure you want to cancel filling this form?")) {
     document.getElementById("audit-form").reset();
@@ -217,7 +182,7 @@ function cancelAudit() {
   }
 }
 
-function cancelEdit() {
+function cancelEdit() { 
   // Hide the form
   document.getElementById('auditFormContainer').style.display = 'none';
 
@@ -358,6 +323,10 @@ function deleteAudit() {
     button.closest('tr').remove();
     }
 }
+
+
+// NON-CONFORMITY-PLAN-JAVASCRIPT----------->
+
 
 function createNewNC() {
   const formContainer = document.getElementById('nc-form-container');
