@@ -332,6 +332,7 @@ function createNewNC() {
     // Disable edit/delete until needed
     document.getElementById('deleteBtnNC').disabled = true;
   }
+  document.getElementById('saveBtn').innerText = selectedNCRow ? 'Update' : 'Save';
 }
 
 function generateNCId() {
@@ -419,14 +420,24 @@ function selectNCRowForEdit(row) {
   const cells = row.querySelectorAll('td');
 
   document.getElementById('nc-form-container').style.display = 'block';
-  document.getElementById('nc-id').value = cells[0].innerText;
-  document.getElementById('nc-audit-id').value = cells[1].innerText;
-  document.getElementById('description').value = cells[2].innerText;
-  document.getElementById('clause').value = cells[3].innerText;
-  document.getElementById('nc-type').value = cells[4].innerText;
-  document.getElementById('due-date').value = cells[5].innerText;
+  // Get NC ID from the <a> tag inside cell[1]
+  document.getElementById('nc-id').value = cells[1].querySelector('a').innerText;
+  document.getElementById('nc-audit-id').value = cells[2].innerText;
+  document.getElementById('description').value = cells[3].innerText;
+  document.getElementById('clause').value = cells[4].innerText;
+  document.getElementById('nc-type').value = cells[5].innerText;
+  document.getElementById('due-date').value = cells[6].innerText;
+  document.getElementById('nc-department').value = cells[7].innerText;
+  document.getElementById('nc-Responsible-Person').value = cells[8].innerText;
+  document.getElementById('nc-Responsible-Person-Email').value = cells[9].innerText;
+  document.getElementById('Location').value = cells[10].innerText;
+  document.getElementById('corrective-action').value = cells[11].innerText;
+  document.getElementById('preventive-action').value = cells[12].innerText;
+  document.getElementById('root-cause').value = cells[13].innerText;
+  document.getElementById('status-nc').value = cells[14].innerText;
   document.getElementById('deleteBtnNC').disabled = false;
 }
+
 
 function editNCRow(button) {
     const row = button.closest('tr');
@@ -439,7 +450,7 @@ function editNCRow(button) {
     selectedNCRow = row;
 
     // Fill form fields from the row's cells
-    document.getElementById('nc-id').value = cells[1].innerText;
+    document.getElementById('nc-id').value = cells[1].querySelector('a').innerText;
     document.getElementById('nc-audit-id').value = cells[2].innerText;
     document.getElementById('description').value = cells[3].innerText;
     document.getElementById('clause').value = cells[4].innerText;
