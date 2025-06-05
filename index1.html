@@ -1,4 +1,4 @@
-<!--03-06-2025-->
+<!--05-06-2025-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +8,8 @@
   <title>Onextel Audit Tool 1</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
   <link rel="stylesheet" href="style1.css"/>
 </head>
 <body onload="showSection('dashboard')">
@@ -129,24 +131,28 @@
               <input class="input" type="text" id="lead-auditor" />
             </div>
 
-            <div class="column is-one-third">
-              <label class="label">Location</label>
-              <div class="select is-fullwidth">
-                <select id="location">
-                <option value="">Select Location</option>
+          <div class="column is-one-third">
+            <label class="label">Location</label>
+              <select id="Location-audit" multiple>
                 <option value="Noida">Noida</option>
                 <option value="Bangalore">Bangalore</option>
                 <option value="Pune">Pune</option>
                 <option value="Dubai">Dubai</option>
                 <option value="Singapore">Singapore</option>
                 <option value="Gurgaon">Gurgaon</option>
-                </select>
-              </div>
-            </div>
+              </select>
+          </div>
 
             <div class="column is-one-third">
               <label class="label">Audit Team</label>
-              <input class="input" type="text" id="audit-team" />
+                <select id="audit-team" multiple>
+                  <option value="Alice">Alice</option>
+                  <option value="Bob">Bob</option>
+                  <option value="Charlie">Charlie</option>
+                  <option value="David">David</option>
+                  <option value="Eve">Eve</option>
+                  <!-- Add more team members as needed -->
+                </select>
             </div>
 
             <div class="column is-one-third">
@@ -169,6 +175,31 @@
                 </select>
               </div>
             </div>
+
+            <div class="field">
+              <label class="label">Audit Form Attachment</label>
+                <div class="control">
+                  <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                      <input class="file-input" type="file" id="audit-attachment" multiple/>
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose file(s) from your device…
+                          </span>
+                        </span>
+                      <span class="file-name" id="audit-attachment-name">
+                        No file uploaded
+                      </span>
+                   </label>
+                  </div>
+               </div>
+              <div id="audit-attachment-list" style="margin-top: 0.5em;"></div>
+            </div>
+
+
           </div>
         </form>
       </div>
@@ -250,12 +281,14 @@
 
           <div class="column is-one-third">
             <label class="label">Description</label>
-            <input class="input" type="text" id="description" />
+              <textarea class="textarea limited-textarea" id="description" rows="5" placeholder="Up to 1000 words"></textarea>
+                 <p class="help is-info" id="description-count">0 / 1000 words</p>
           </div>
           
           <div class="column is-one-third">
             <label class="label">Clause No</label>
-            <input class="input" type="text" id="clause" />
+              <textarea class="textarea limited-textarea" id="clause-number" rows="5" placeholder="Up to 1000 words"></textarea>
+                <p class="help is-info" id="clause-number-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
@@ -291,63 +324,53 @@
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Responsible-Person</label>
-              <div class="select is-fullwidth">
-                <select id="nc-Responsible-Person">
-                <option value="">Select Responsible-Person</option>
-                <option value="x">x</option>
-                <option value="y">y</option>
-                <option value="z">z</option>
-                <option value="a">a</option>
-                <option value="b">b</option>
-                <option value="c">c</option>
+              <label class="label">Responsible Person</label>
+                <select id="responsible-person" class="input" style="width: 100%;">
+                  <option value="">Select or type a name</option>
+                  <option value="Alice">Alice</option>
+                  <option value="Bob">Bob</option>
+                  <option value="Charlie">Charlie</option>
                 </select>
-              </div>
             </div>
 
-            <div class="column is-one-third">
-              <label class="label">Responsible-Person-Email</label>
-              <div class="select is-fullwidth">
-                <select id="nc-Responsible-Person-Email">
-                <option value="">Select Responsible-Person-Email</option>
-                <option value="x@123">x@123</option>
-                <option value="y@123">y@123</option>
-                <option value="z@123">z@123</option>
-                <option value="a@123">a@123</option>
-                <option value="b@123">b@123</option>
-                <option value="c@123">c@123</option>
-                </select>
-              </div>
-            </div>
+          <div class="column is-one-third">
+            <label class="label">Responsible Person Email</label>
+              <select id="responsible-person-email" class="input" style="width: 100%;">
+                <option value="">Select or type an email</option>
+                <option value="alice@example.com">alice@example.com</option>
+                <option value="bob@example.com">bob@example.com</option>
+                <option value="charlie@example.com">charlie@example.com</option>
+              </select>
+          </div>
 
-            <div class="column is-one-third">
-              <label class="label">Location</label>
-              <div class="select is-fullwidth">
-                <select id="Location">
-                <option value="">Select Location</option>
+          <div class="column is-one-third">
+            <label class="label">Location</label>
+              <select id="Location-nc" multiple>
                 <option value="Noida">Noida</option>
                 <option value="Bangalore">Bangalore</option>
                 <option value="Pune">Pune</option>
                 <option value="Dubai">Dubai</option>
                 <option value="Singapore">Singapore</option>
                 <option value="Gurgaon">Gurgaon</option>
-                </select>
-              </div>
-            </div>
+              </select>
+          </div>
 
           <div class="column is-one-third">
               <label class="label">Corrective Action</label>
-              <input class="input" type="text" id="corrective-action" />
+                <textarea class="textarea limited-textarea" id="corrective-action" rows="5" placeholder="Up to 1000 words"></textarea>
+                  <p class="help is-info" id="corrective-action-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
               <label class="label">Preventive Action</label>
-              <input class="input" type="text" id="preventive-action" />
+              <textarea class="textarea limited-textarea" id="preventive-action" rows="5" placeholder="Up to 1000 words"></textarea>
+                <p class="help is-info" id="preventive-action-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
               <label class="label">Root Cause</label>
-              <input class="input" type="text" id="root-cause" />
+                <textarea class="textarea limited-textarea" id="root-cause" rows="5" placeholder="Up to 1000 words"></textarea>
+                  <p class="help is-info" id="root-cause-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
@@ -364,6 +387,31 @@
                 </select>
               </div>
           </div>
+
+          <div class="field">
+              <label class="label">NC Form Attachment</label>
+                <div class="control">
+                  <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                      <input class="file-input" type="file" id="nc-attachment" multiple/>
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose file(s) from your device…
+                          </span>
+                        </span>
+                      <span class="file-name" id="nc-attachment-name">
+                        No file uploaded
+                      </span>
+                   </label>
+                  </div>
+               </div>
+              <div id="nc-attachment-list" style="margin-top: 0.5em;"></div>
+          </div>
+
+
         </div>
       </form>
     </div>

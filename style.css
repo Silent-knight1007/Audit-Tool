@@ -1,4 +1,4 @@
-/*02-06-2025*/
+/*04-06-2025*/
 
 .content-section { display: none; }
 
@@ -55,4 +55,9 @@
 
 .red-button:hover {
   background-color: #dc2626; /* Tailwind's red-600 */
+}
+
+.limited-textarea {
+  overflow-y: hidden;
+  resize: none;
 }

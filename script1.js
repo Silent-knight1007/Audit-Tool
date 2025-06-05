@@ -1,4 +1,4 @@
-/* 03-06-2025 */
+/* 05-06-2025 */
 
 let auditCounter = 1;
     let ncCounter = 1;
@@ -34,7 +34,7 @@ if (
   !document.getElementById('audit-type').value ||
   !Array.from(document.getElementById('standards').selectedOptions).length ||
   !document.getElementById('lead-auditor').value ||
-  !document.getElementById('location').value ||
+  !document.getElementById('Location-audit').value ||
   !document.getElementById('audit-team').value ||
   !document.getElementById('planned-date').value ||
   !document.getElementById('actual-date').value ||
@@ -47,7 +47,7 @@ if (
   const auditType = document.getElementById('audit-type').value;
   const standards = Array.from(document.getElementById('standards').selectedOptions).map(o => o.value).join(', ');
   const leadAuditor = document.getElementById('lead-auditor').value;
-  const location = document.getElementById('location').value;
+  const location = document.getElementById('Location-audit').value;
   const auditTeam = document.getElementById('audit-team').value;
   const plannedDate = document.getElementById('planned-date').value;
   const actualDate = document.getElementById('actual-date').value;
@@ -77,7 +77,7 @@ if (
     cells[4].innerText = leadAuditorInput || cells[4].innerText;
 
     // Location (cell 5)
-    const locationInput = document.getElementById('location').value;
+    const locationInput = document.getElementById('Location-audit').value;
     cells[5].innerText = locationInput || cells[5].innerText;
 
     // Audit Team (cell 6)
@@ -302,7 +302,7 @@ function deleteAuditRow(button) {
 }
 
 
-   // NON-CONFORMITY JAVASCRIPT------------>
+// NON-CONFORMITY JAVASCRIPT------------>
 
 function createNewNC() {
   const formContainer = document.getElementById('nc-form-container');
@@ -312,25 +312,18 @@ function createNewNC() {
   formContainer.style.display = isVisible ? 'none' : 'block';
 
   if (!isVisible) {
-    // Just show blank form first
     document.getElementById('nc-form').reset();
     selectedNCRow = null;
 
     // Set default NC ID if Audit ID selected
     const auditId = document.getElementById('nc-audit-id').value;
     if (auditId) {
-      const ncId = `${auditId}_NC_${String(ncCounter).padStart(3, '0')}`;
-      document.getElementById('nc-id').value = ncId;
-
       generateNCId();
-      
     } else {
-      // Leave NC ID blank; show user-friendly hint instead
       document.getElementById('nc-id').value = '';
     }
 
-    // Disable edit/delete until needed
-    document.getElementById('deleteBtnNC').disabled = true;
+    document.getElementById('delete-selected-btn').disabled = true;
   }
   document.getElementById('saveBtn').innerText = selectedNCRow ? 'Update' : 'Save';
 }
@@ -338,7 +331,7 @@ function createNewNC() {
 function generateNCId() {
   const auditId = document.getElementById('nc-audit-id').value;
   if (!auditId) {
-    document.getElementById('nc-id').value = ''; // clear if nothing selected
+    document.getElementById('nc-id').value = '';
     return;
   }
 
@@ -346,7 +339,7 @@ function generateNCId() {
   const rows = document.querySelectorAll('#nc-table-body tr');
   let maxCounter = 0;
   rows.forEach(row => {
-    const ncId = row.cells[0].innerText; // e.g. AUD-001_NC_001
+    const ncId = row.cells[1].innerText || row.cells[1].querySelector('a').innerText;
     if (ncId.startsWith(auditId + '_NC_')) {
       const numPart = ncId.split('_NC_')[1];
       const num = parseInt(numPart, 10);
@@ -362,8 +355,6 @@ function generateNCId() {
 function updateNCAuditDropdown() {
   const auditId = document.getElementById('audit-id').value;
   const dropdown = document.getElementById('nc-audit-id');
-
-  // Check if already exists
   const exists = Array.from(dropdown.options).some(opt => opt.value === auditId);
 
   if (!exists && auditId !== "") {
@@ -372,16 +363,15 @@ function updateNCAuditDropdown() {
     option.textContent = auditId;
     dropdown.appendChild(option);
   }
-
 }
 
 function updateDueDate() {
-      const type = document.getElementById('nc-type').value;
-      const today = new Date();
-      const due = new Date(today);
-      if (type === "Minor") due.setDate(today.getDate() + 30);
-      if (type === "Major") due.setDate(today.getDate() + 15);
-      document.getElementById('due-date').value = due.toISOString().split("T")[0];
+  const type = document.getElementById('nc-type').value;
+  const today = new Date();
+  const due = new Date(today);
+  if (type === "Minor") due.setDate(today.getDate() + 30);
+  if (type === "Major") due.setDate(today.getDate() + 15);
+  document.getElementById('due-date').value = due.toISOString().split("T")[0];
 }
 
 function editNCFromLink(link) {
@@ -393,7 +383,6 @@ function updateNC() {
   if (!selectedNCRow) return;
 
   const cells = selectedNCRow.querySelectorAll('td');
-  // cells[0] is the checkbox cell, so start from cells[1]
   cells[1].innerHTML = `<a href="#" onclick="editNCFromLink(this)">${document.getElementById('nc-id').value}</a>`;
   cells[2].innerText = document.getElementById('nc-audit-id').value;
   cells[3].innerText = document.getElementById('description').value;
@@ -413,6 +402,7 @@ function updateNC() {
   document.getElementById('deleteBtnNC').disabled = true;
   document.getElementById('nc-form').reset();
   document.getElementById('nc-form-container').style.display = 'none';
+  document.getElementById('saveBtn').innerText = 'Save';
 }
 
 function selectNCRowForEdit(row) {
@@ -420,7 +410,6 @@ function selectNCRowForEdit(row) {
   const cells = row.querySelectorAll('td');
 
   document.getElementById('nc-form-container').style.display = 'block';
-  // Get NC ID from the <a> tag inside cell[1]
   document.getElementById('nc-id').value = cells[1].querySelector('a').innerText;
   document.getElementById('nc-audit-id').value = cells[2].innerText;
   document.getElementById('description').value = cells[3].innerText;
@@ -438,77 +427,16 @@ function selectNCRowForEdit(row) {
   document.getElementById('deleteBtnNC').disabled = false;
 }
 
-
-function editNCRow(button) {
-    const row = button.closest('tr');
-    const cells = row.querySelectorAll('td');
-
-    // Show the NC form
-    document.getElementById('nc-form-container').style.display = 'block';
-
-    // Set global selected row for later update
-    selectedNCRow = row;
-
-    // Fill form fields from the row's cells
-    document.getElementById('nc-id').value = cells[1].querySelector('a').innerText;
-    document.getElementById('nc-audit-id').value = cells[2].innerText;
-    document.getElementById('description').value = cells[3].innerText;
-    document.getElementById('clause').value = cells[4].innerText;
-    document.getElementById('nc-type').value = cells[5].innerText;
-    document.getElementById('due-date').value = cells[6].innerText;
-    document.getElementById('nc-department').value = cells[7].innerText;
-    document.getElementById('nc-Responsible-Person').value = cells[8].innerText;
-    document.getElementById('nc-Responsible-Person-Email').value = cells[9].innerText;
-    document.getElementById('Location').value = cells[10].innerText;
-    document.getElementById('corrective-action').value = cells[11].innerText;
-    document.getElementById('preventive-action').value = cells[12].innerText;
-    document.getElementById('root-cause').value = cells[13].innerText;
-    document.getElementById('status-nc').value = cells[14].innerText;
-
-    // Enable delete button if you have one
-    document.getElementById('deleteBtnNC').disabled = false;
-}
-
 function cancelNC() {
   if (confirm("Are you sure you want to cancel filling this form?")) {
     document.getElementById("nc-form").reset();
     document.getElementById("nc-form-container").style.display = "none";
-    selectedAuditRow = null;
+    selectedNCRow = null;
     document.getElementById('saveBtn').innerText = 'Save';
   }
 }
 
-function cancelEdit() {
-  // Hide the form
-  document.getElementById('ncFormContainer').style.display = 'none';
-
-  // Clear all input fields
-  clearNCForm();
-
-  // Stop editing any row
-  selectedNCRow = null;
-
-  // Change the Save button text back to "Save"
-  document.getElementById('saveBtn').innerText = 'Save';
-
-  console.log('Cancelled edit, form reset.');
-}
-
-function showNCForm() {
-  // Show the form
-  document.getElementById('ncFormContainer').style.display = 'block';
-
-  // Clear form fields
-  clearNCForm();
-
-  // Stop editing anything
-  selectedAuditRow = null;
-
-  // Change Save button to "Save"
-  document.getElementById('saveBtn').innerText = 'Save';
-
-  console.log('Form opened for new nc.');
-}
+// Removed cancelEdit() and showNCForm() as they are not needed
 
 function handleCheckboxChange() {
   const anyChecked = document.querySelectorAll(".nc-checkbox:checked").length > 0;
@@ -516,27 +444,27 @@ function handleCheckboxChange() {
 }
 
 function saveNC() {
+  // Validation
+  if (
+    !document.getElementById('nc-audit-id').value ||
+    !document.getElementById('nc-id').value ||
+    !document.getElementById('description').value ||
+    !document.getElementById('clause').value ||
+    !document.getElementById('nc-type').value ||
+    !document.getElementById('due-date').value ||
+    !document.getElementById('nc-department').value ||
+    !document.getElementById('responsible-person').value ||
+    !document.getElementById('responsible-person-email').value ||
+    !document.getElementById('Location-nc').value ||
+    !document.getElementById('corrective-action').value ||
+    !document.getElementById('preventive-action').value ||
+    !document.getElementById('root-cause').value ||
+    !document.getElementById('status-nc').value
+  ) {
+    alert("Please fill all required fields before saving.");
+    return;
+  }
 
-if (
-  !document.getElementById('nc-audit-id').value ||
-  !document.getElementById('nc-id').value ||
-  !document.getElementById('description').value ||
-  !document.getElementById('clause').value ||
-  !document.getElementById('nc-type').value ||
-  !document.getElementById('due-date').value ||
-  !document.getElementById('nc-department').value ||
-  !document.getElementById('nc-Responsible-Person').value||
-  !document.getElementById('nc-Responsible-Person-Email').value||
-  !document.getElementById('Location').value||
-  !document.getElementById('corrective-action').value||
-  !document.getElementById('preventive-action').value||
-  !document.getElementById('root-cause').value||
-  !document.getElementById('status-nc').value
-) 
-{
-  alert("Please fill all  required fields before saving.");
-  return;
-}
   const ncId = document.getElementById('nc-id').value;
   const auditId = document.getElementById('nc-audit-id').value;
   const description = document.getElementById('description').value;
@@ -544,58 +472,30 @@ if (
   const type = document.getElementById('nc-type').value;
   const dueDate = document.getElementById('due-date').value;
   const department = document.getElementById('nc-department').value;
-  const responsibleperson = document.getElementById('nc-Responsible-Person').value;
-  const responsiblepersonemail = document.getElementById('nc-Responsible-Person-Email').value;
-  const location = document.getElementById('Location').value;
+  const responsibleperson = document.getElementById('responsible-person').value;
+  const responsiblepersonemail = document.getElementById('responsible-person-email').value;
+  const location = document.getElementById('Location-nc').value;
   const correctiveaction = document.getElementById('corrective-action').value;
   const preventiveaction = document.getElementById('preventive-action').value;
   const rootcause = document.getElementById('root-cause').value;
   const status = document.getElementById('status-nc').value;
 
-  // ✅ Update existing row
+  // Update existing row
   if (selectedNCRow) {
     const cells = selectedNCRow.querySelectorAll('td');
-
-    // NC ID (cell 1 - skip checkbox cell 0)
     cells[1].innerHTML = `<a href="#" onclick="editNCFromLink(this)">${ncId}</a>`;
-    
-    // Audit ID (cell 2)
     cells[2].innerText = auditId;
-    
-    // Description (cell 3)
     cells[3].innerText = description;
-    
-    // Clause No (cell 4)
     cells[4].innerText = clause;
-    
-    // NC-Type (cell 5)
     cells[5].innerText = type;
-    
-    // Due Date (cell 6)
     cells[6].innerText = dueDate;
-    
-    // Department (cell 7)
     cells[7].innerText = department;
-    
-    // Responsible Person (cell 8)
     cells[8].innerText = responsibleperson;
-    
-    // Responsible Person Email (cell 9)
     cells[9].innerText = responsiblepersonemail;
-    
-    // Location (cell 10)
     cells[10].innerText = location;
-    
-    // Corrective Action (cell 11)
     cells[11].innerText = correctiveaction;
-    
-    // Preventive Action (cell 12)
     cells[12].innerText = preventiveaction;
-    
-    // Root Cause (cell 13)
     cells[13].innerText = rootcause;
-    
-    // Status (cell 14)
     cells[14].innerText = status;
 
     selectedNCRow = null;
@@ -605,49 +505,59 @@ if (
     updateNCAuditDropdown();
     return;
   }
-  // ✅ Create new row
-  else {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="checkbox" class="nc-checkbox"></td>
-      <td><a href="#" onclick="editNCFromLink(this)">${ncId}</a></td>
-      <td>${auditId}</td>
-      <td>${description}</td>
-      <td>${clause}</td>
-      <td>${type}</td>
-      <td>${dueDate}</td>
-      <td>${department}</td>
-      <td>${responsibleperson}</td>
-      <td>${responsiblepersonemail}</td>
-      <td>${location}</td>
-      <td>${correctiveaction}</td>
-      <td>${preventiveaction}</td>
-      <td>${rootcause}</td>
-      <td>${status}</td>
-    `;
-    document.getElementById('nc-table-body').appendChild(row);
-  }
-    row.onclick = () => selectNCRowForEdit(row);
-    document.getElementById('nc-table-body').appendChild(row);
-    // Attach event listener to the checkbox inside this row
-    const checkbox = row.querySelector('input[name="nc-checkbox"]');
-    checkbox.addEventListener('change', updateDeleteButtonState);
-    ncCounter++;
 
-    generateNCId();
-    selectedNCRow = null;
-    document.getElementById('nc-form').reset();
-    document.getElementById('nc-form-container').style.display = 'none';
-    document.getElementById('saveBtn').innerText = 'Save';
-    updateNCAuditDropdown(); 
+  // Prevent duplicate NC IDs
+  const existing = Array.from(document.querySelectorAll('#nc-table-body tr')).some(tr => {
+    return tr.cells[1].querySelector('a').innerText === ncId;
+  });
+  if (existing) {
+    alert('This NC ID already exists.');
+    return;
+  }
+
+  // Create new row
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="checkbox" class="nc-checkbox"></td>
+    <td><a href="#" onclick="editNCFromLink(this)">${ncId}</a></td>
+    <td>${auditId}</td>
+    <td>${description}</td>
+    <td>${clause}</td>
+    <td>${type}</td>
+    <td>${dueDate}</td>
+    <td>${department}</td>
+    <td>${responsibleperson}</td>
+    <td>${responsiblepersonemail}</td>
+    <td>${location}</td>
+    <td>${correctiveaction}</td>
+    <td>${preventiveaction}</td>
+    <td>${rootcause}</td>
+    <td>${status}</td>
+  `;
+  row.onclick = () => selectNCRowForEdit(row);
+  document.getElementById('nc-table-body').appendChild(row);
+
+  // Attach event listener to the checkbox inside this row
+  const checkbox = row.querySelector('.nc-checkbox');
+  if (checkbox) {
+    checkbox.addEventListener('change', updateDeleteButtonState);
+  }
+  ncCounter++;
+
+  generateNCId();
+  selectedNCRow = null;
+  document.getElementById('nc-form').reset();
+  document.getElementById('nc-form-container').style.display = 'none';
+  document.getElementById('saveBtn').innerText = 'Save';
+  updateNCAuditDropdown();
 }
 
 function updateDeleteButtonState() {
-  const checkboxes = document.querySelectorAll('input[name="nc-checkbox"]');
+  const checkboxes = document.querySelectorAll('.nc-checkbox');
   const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
   document.getElementById('delete-selected-btn').disabled = !anyChecked;
 
-  // Also update the Select All checkbox state (checked, unchecked, indeterminate)
+  // Update the Select All checkbox state (checked, unchecked, indeterminate)
   const selectAllCheckbox = document.getElementById('nc-select-all');
   if (!selectAllCheckbox) return;
   const allChecked = Array.from(checkboxes).every(cb => cb.checked);
@@ -672,8 +582,8 @@ function deleteSelectedNC() {
   }
   if (!confirm("Are you sure you want to delete the selected NC(s)?")) return;
   checkboxes.forEach(cb => cb.closest('tr').remove());
-  // Optionally, uncheck master checkbox
   document.getElementById('nc-select-all').checked = false;
+  updateDeleteButtonState();
 }
 
 function deleteNC() {
@@ -692,63 +602,216 @@ function deleteNCRow(button) {
   }
 }
 
+// DOMContentLoaded and event listeners
 document.addEventListener('DOMContentLoaded', function () {
-    new Choices('#standards', {
-        removeItemButton: true,
-        placeholderValue: 'Select standards',
-        searchEnabled: true
-    });
-    document.getElementById('nc-audit-id').addEventListener('change', function() {
-         generateNCId(); 
-    });
-
+  new Choices('#standards', {
+    removeItemButton: true,
+    placeholderValue: 'Select standards',
+    searchEnabled: true
+  });
+  document.getElementById('nc-audit-id').addEventListener('change', function() {
+    generateNCId();
+  });
+  document.getElementById('nc-select-all').addEventListener('change', function() {
+    const checked = this.checked;
+    document.querySelectorAll('.nc-checkbox').forEach(cb => cb.checked = checked);
+    updateDeleteButtonState();
+  });
 });
 
-document.getElementById('select-all-checkbox').addEventListener('change', function() {
-  const checked = this.checked;
-  const checkboxes = document.querySelectorAll('input[name="audit-checkbox"]');
-  checkboxes.forEach(cb => cb.checked = checked);
-  updateDeleteButtonState();
+document.addEventListener('DOMContentLoaded', function () {
+  new Choices('#Location-nc', {
+    removeItemButton: true,
+    placeholderValue: 'Select Location',
+    searchEnabled: true
+  });
+  new Choices('#Location-audit', {
+    removeItemButton: true,
+    placeholderValue: 'Select Location',
+    searchEnabled: true
+  });
 });
 
-document.getElementById('nc-select-all').addEventListener('change', function() {
-  const checked = this.checked;
-  document.querySelectorAll('.nc-checkbox').forEach(cb => cb.checked = checked);
+document.addEventListener('DOMContentLoaded', function () {
+  new Choices('#audit-team', {
+    removeItemButton: true,
+    placeholderValue: 'Select Audit Team Members',
+    searchEnabled: true
+  });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+  // Initial mapping of names to emails
+  const people = {
+    "Alice": "alice@example.com",
+    "Bob": "bob@example.com",
+    "Charlie": "charlie@example.com"
+  };
 
-/*const data = [
-      { id: 'AUD001', date: '2024-06-01' },
-      { id: 'AUD002', date: '2024-06-02' },
-      { id: 'AUD003', date: '2024-06-03' }
-    ];
+  // Choices.js for Responsible Person (single select, allow add)
+  const personChoices = new Choices('#responsible-person', {
+    removeItemButton: true,
+    placeholderValue: 'Select or type a name',
+    duplicateItemsAllowed: false,
+    addItems: true,
+    searchEnabled: true,
+    maxItemCount: 1,
+    noResultsText: '', // Hide "No results found"
+    addItemFilter: value => value.trim().length > 0 // Prevent empty values
+  });
 
-    const tbody = document.getElementById('audit-table-body');
+  // Choices.js for Responsible Person Email (single select, allow add)
+  const emailChoices = new Choices('#responsible-person-email', {
+    removeItemButton: true,
+    placeholderValue: 'Select or type an email',
+    duplicateItemsAllowed: false,
+    addItems: true,
+    searchEnabled: true,
+    maxItemCount: 1,
+    noResultsText: '', // Hide "No results found"
+    addItemFilter: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) // Only allow valid emails
+  });
 
-    data.forEach((item, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="checkbox" class="rowCheckbox" data-index="${index}"></td>
-        <td>${item.id}</td>
-        <td>${item.date}</td>
-      `;
-      tbody.appendChild(row);
-    });
-
-    const selectAllCheckbox = document.getElementById('select-all-btn');
-
-    selectAllCheckbox.addEventListener('change', function () {
-      const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
-      rowCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-    });
-
-    document.addEventListener('change', function (e) {
-      if (e.target.classList.contains('rowCheckbox')) {
-        const allCheckboxes = document.querySelectorAll('.rowCheckbox');
-        const allChecked = Array.from(allCheckboxes).every(cb => cb.checked);
-        selectAllCheckbox.checked = allChecked;
+  // When name changes, set email if known, else clear email
+  document.getElementById('responsible-person').addEventListener('change', function () {
+    const selectedName = this.value;
+    if (people[selectedName]) {
+      // If email exists, select it (add to Choices if not present)
+      let found = false;
+      emailChoices._store.choices.forEach(choice => {
+        if (choice.value === people[selectedName]) found = true;
+      });
+      if (!found) {
+        emailChoices.setChoices([{
+          value: people[selectedName],
+          label: people[selectedName],
+          selected: true
+        }], 'value', 'label', true);
+      } else {
+        emailChoices.setChoiceByValue(people[selectedName]);
       }
-    });*/
+    } else if (selectedName) {
+      // New name, clear email field for manual entry
+      emailChoices.removeActiveItems();
+    } else {
+      emailChoices.removeActiveItems();
+    }
+  });
+
+  // When email changes, if not mapped, add mapping and persist for session
+  document.getElementById('responsible-person-email').addEventListener('change', function () {
+    const selectedName = document.getElementById('responsible-person').value;
+    const selectedEmail = this.value;
+    if (selectedName && selectedEmail) {
+      // Save mapping for this session
+      people[selectedName] = selectedEmail;
+      // Add to email dropdown if not already present
+      let found = false;
+      emailChoices._store.choices.forEach(choice => {
+        if (choice.value === selectedEmail) found = true;
+      });
+      if (!found) {
+        emailChoices.setChoices([{
+          value: selectedEmail,
+          label: selectedEmail,
+          selected: true
+        }], 'value', 'label', true);
+      }
+      // Add to person dropdown if not already present
+      let foundName = false;
+      personChoices._store.choices.forEach(choice => {
+        if (choice.value === selectedName) foundName = true;
+      });
+      if (!foundName) {
+        personChoices.setChoices([{
+          value: selectedName,
+          label: selectedName,
+          selected: true
+        }], 'value', 'label', true);
+      }
+    }
+  });
+});
+
+const multilineFields = [
+  'clause-number',
+  'root-cause',
+  'preventive-action',
+  'corrective-action',
+  'description'
+];
+
+function countWords(str) {
+  return str.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function autoGrow(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+multilineFields.forEach(function(fieldId) {
+  const textarea = document.getElementById(fieldId);
+  const countDisplay = document.getElementById(fieldId + '-count');
+  if (!textarea) return;
+
+  textarea.addEventListener('input', function() {
+    let words = countWords(this.value);
+    if (words > 1000) {
+      let trimmed = this.value.trim().split(/\s+/).slice(0, 1000).join(' ');
+      this.value = trimmed;
+      words = 1000;
+    }
+    if (countDisplay) {
+      countDisplay.textContent = `${words} / 1000 words`;
+    }
+    autoGrow(this);
+  });
+
+  // Initial grow and count
+  autoGrow(textarea);
+  if (countDisplay) countDisplay.textContent = `${countWords(textarea.value)} / 1000 words`;
+});
+
+function handleBulmaFileInput(inputId, nameId, listId) {
+  const input = document.getElementById(inputId);
+  const nameSpan = document.getElementById(nameId);
+  const listDiv = document.getElementById(listId);
+
+  input.addEventListener('change', function() {
+    const files = Array.from(input.files);
+    if (files.length === 0) {
+      nameSpan.textContent = "No file uploaded";
+      listDiv.innerHTML = "";
+      return;
+    }
+    nameSpan.textContent = files.map(f => f.name).join(', ');
+
+    // Show download links for each file
+    listDiv.innerHTML = '';
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file.name;
+      link.textContent = `Download ${file.name}`;
+      link.className = 'button is-small is-link m-1';
+      listDiv.appendChild(link);
+    });
+  });
+}
+
+// For NC form
+handleBulmaFileInput('nc-attachment', 'nc-attachment-name', 'nc-attachment-list');
+
+// For Audit form
+handleBulmaFileInput('audit-attachment', 'audit-attachment-name', 'audit-attachment-list');
+
+document.addEventListener('DOMContentLoaded', function() {
+  handleBulmaFileInput('nc-attachment', 'nc-attachment-name', 'nc-attachment-list');
+  handleBulmaFileInput('audit-attachment', 'audit-attachment-name', 'audit-attachment-list');
+});
+
 
 
 
