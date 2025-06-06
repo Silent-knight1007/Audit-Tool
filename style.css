@@ -1,4 +1,4 @@
-/*04-06-2025*/
+/*05-06-2025*/
 
 .content-section { display: none; }
 
@@ -61,3 +61,19 @@
   overflow-y: hidden;
   resize: none;
 }
+
+.required {
+  color: red;
+  margin-left: 2px;
+}
+
+.nc-shadow-box {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.38); /* Strong black shadow */
+  border-radius: 8px;
+  background: #fff; /* Or your preferred background */
+  padding: 1.5em;
+  border: 1px solid #e0e0e0;
+}
+
+
+

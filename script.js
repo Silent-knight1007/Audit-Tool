@@ -1,4 +1,4 @@
-/* 04-06-2025 */
+/* 05-06-2025 */
 
 let auditCounter = 1;
     let ncCounter = 1;
@@ -12,6 +12,7 @@ function showSection(id) {
       });
       document.getElementById(id).style.display = 'block';
 }
+
 
     // AUDIT JAVASCRIPT--------->
 
@@ -37,7 +38,6 @@ if (
   !document.getElementById('Location-audit').value ||
   !document.getElementById('audit-team').value ||
   !document.getElementById('planned-date').value ||
-  !document.getElementById('actual-date').value ||
   !document.getElementById('status').value
 ) {
   alert("Please fill all required fields before saving.");
@@ -50,8 +50,8 @@ if (
   const location = document.getElementById('Location-audit').value;
   const auditTeam = document.getElementById('audit-team').value;
   const plannedDate = document.getElementById('planned-date').value;
-  const actualDate = document.getElementById('actual-date').value;
   const status = document.getElementById('status').value;
+  const actualDate = document.getElementById('actual-date').value;
 
 
   if (selectedAuditRow) {
@@ -88,13 +88,13 @@ if (
     const plannedDateInput = document.getElementById('planned-date').value;
     cells[7].innerText = plannedDateInput || cells[7].innerText;
 
-    // Actual Date (cell 8)
-    const actualDateInput = document.getElementById('actual-date').value;
-    cells[8].innerText = actualDateInput || cells[8].innerText;
-
-    // Status (cell 9)
+    // Status (cell 8)
     const statusInput = document.getElementById('status').value;
-    cells[9].innerText = statusInput || cells[9].innerText;
+    cells[8].innerText = statusInput || cells[9].innerText;
+
+    // Actual Date (cell 9)
+    const actualDateInput = document.getElementById('actual-date').value;
+    cells[9].innerText = actualDateInput || cells[8].innerText;
 
     selectedAuditRow = null;
     document.getElementById('audit-form').reset();
@@ -115,8 +115,8 @@ if (
       <td>${location}</td>
       <td>${auditTeam}</td>
       <td>${plannedDate}</td>
-      <td>${actualDate}</td>
       <td>${status}</td>
+      <td>${actualDate}</td>
     `;
     row.onclick = () => selectRowForEdit(row);
     document.getElementById('audit-table-body').appendChild(row);
@@ -227,8 +227,8 @@ function selectRowForEdit(row) {
   document.getElementById('location').value = cells[5].innerText;
   document.getElementById('audit-team').value = cells[6].innerText;
   document.getElementById('planned-date').value = cells[7].innerText;
-  document.getElementById('actual-date').value = cells[8].innerText;
   document.getElementById('status').value = cells[9].innerText;
+  document.getElementById('actual-date').value = cells[8].innerText;
 
   // Enable buttons
    document.getElementById('saveBtn').innerText = 'Update';
@@ -252,8 +252,8 @@ function editAuditRow(button) {
         document.getElementById('location').value = cells[4].innerText;
         document.getElementById('audit-team').value = cells[5].innerText;
         document.getElementById('planned-date').value = cells[6].innerText;
-        document.getElementById('actual-date').value = cells[7].innerText;
         document.getElementById('status').value = cells[8].innerText;
+        document.getElementById('actual-date').value = cells[7].innerText;
 
        // row.remove(); // Remove old row to avoid duplicate after re-saving
 }
@@ -811,6 +811,47 @@ document.addEventListener('DOMContentLoaded', function() {
   handleBulmaFileInput('nc-attachment', 'nc-attachment-name', 'nc-attachment-list');
   handleBulmaFileInput('audit-attachment', 'audit-attachment-name', 'audit-attachment-list');
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  const statusSelect = document.getElementById('status');
+  const actualDate = document.getElementById('actual-date');
+  const actualDateRequired = document.getElementById('actual-date-required');
+  const ncFormSection = document.getElementById('nc-form-section');
+  const ncFormLink = document.getElementById('nc-form-link');
+  const ncFormMsg = document.getElementById('nc-form-msg');
+
+  function updateFormFields() {
+    const status = statusSelect.value;
+
+    // Actual Date mandatory only if status is 'completed'
+    if (status === 'completed') {
+      actualDate.setAttribute('required', 'required');
+      actualDateRequired.style.display = 'inline';
+    } else {
+      actualDate.removeAttribute('required');
+      actualDateRequired.style.display = 'none';
+    }
+
+    // Show NC form link/message only if status is 'executed'
+    if (status === 'executed') {
+      ncFormSection.style.display = 'block';
+      ncFormLink.style.display = 'inline';
+      ncFormMsg.style.display = 'block';
+      ncFormMsg.textContent = "Now you can fill the Non-Conformity form!";
+    } else {
+      ncFormSection.style.display = 'none';
+      ncFormLink.style.display = 'none';
+      ncFormMsg.style.display = 'none';
+    }
+  }
+
+  // Initial check on page load
+  updateFormFields();
+
+  // Listen for status changes
+  statusSelect.addEventListener('change', updateFormFields);
+});
+
 
 
 

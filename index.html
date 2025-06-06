@@ -1,4 +1,4 @@
-<!--04-06-2025-->
+<!--05-06-2025-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style1.css"/>
 </head>
 <body onload="showSection('dashboard')">
 
@@ -78,8 +78,8 @@
               <th>Location</th>
               <th>Audit Team</th>
               <th>Planned Date</th>
-              <th>Actual Date</th>
               <th>Status</th>
+              <th>Actual Date</th>
             </tr>
           </thead>
           <tbody id="audit-table-body"></tbody>
@@ -88,7 +88,7 @@
       
       <div id="audit-form-container" style="display: none;">
 
-        <form id="audit-form">
+        <form id="audit-form" action="your-action-url" method="post" target="_blank">
 
           <div class="buttons mt-4">
             <button type="button" id=saveBtn class="button is-success" onclick="saveAudit()">Save</button>
@@ -98,14 +98,18 @@
           <div class="columns is-multiline">
 
             <div class="column is-one-third">
-              <label class="label">Audit ID</label>
+              <label class="label">
+                Audit ID <span class="required">*</span>
+              </label>
               <div class="control">
                 <input class="input" type="text" id="audit-id" name="auditId" readonly>
               </div>
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Audit Type</label>
+              <label class="label">
+                Audit Type <span class="required">*</span>
+              </label>
               <div class="select is-fullwidth">
                 <select id="audit-type">
                   <option>Internal</option>
@@ -115,7 +119,9 @@
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Standards</label>
+              <label class="label">
+                Standards <span class="required">*</span>
+              </label>
               <select id="standards" multiple>
                 <option value="ISO 9001 : 2015">ISO 9001 : 2015</option>
                 <option value="ISO 27001 : 2023">ISO 27001 : 2023</option>
@@ -127,12 +133,16 @@
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Lead Auditor</label>
+              <label class="label">
+                Lead Auditor <span class="required">*</span>
+              </label>
               <input class="input" type="text" id="lead-auditor" />
             </div>
 
-          <div class="column is-one-third">
-            <label class="label">Location</label>
+            <div class="column is-one-third">
+              <label class="label">
+                Location <span class="required">*</span>
+              </label>
               <select id="Location-audit" multiple>
                 <option value="Noida">Noida</option>
                 <option value="Bangalore">Bangalore</option>
@@ -141,10 +151,12 @@
                 <option value="Singapore">Singapore</option>
                 <option value="Gurgaon">Gurgaon</option>
               </select>
-          </div>
+            </div>
 
             <div class="column is-one-third">
-              <label class="label">Audit Team</label>
+              <label class="label">
+                Audit Team <span class="required">*</span>
+              </label>
                 <select id="audit-team" multiple>
                   <option value="Alice">Alice</option>
                   <option value="Bob">Bob</option>
@@ -156,32 +168,56 @@
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Planned Date</label>
+              <label class="label">
+                Planned Date <span class="required">*</span>
+              </label>
               <input class="input" type="date" id="planned-date" />
             </div>
-
+            
+            <!-- Status Field -->
             <div class="column is-one-third">
-              <label class="label">Actual Date</label>
-              <input class="input" type="date" id="actual-date" />
-            </div>
-
-            <div class="column is-one-third">
-              <label class="label">Status</label>
+              <label class="label" for="status">
+                Status <span class="required">*</span>
+              </label>
               <div class="select is-fullwidth">
-                <select id="status">
-                  <option>Planned</option>
-                  <option>Executed</option>
-                  <option>Completed</option>
+                <select id="status" name="status" required>
+                   <option value="" disabled selected>Select status</option>
+                   <option value="planned">Planned</option>
+                   <option value="executed">Executed</option>
+                   <option value="completed">Completed</option>
                 </select>
               </div>
             </div>
+            
+            <!-- Actual Date Field -->
+            <div class="column is-one-third">
+              <label class="label" for="actual-date">
+                Actual Date <span id="actual-date-required" class="required" style="display: none;">*</span>
+              </label>
+              <div class="control">
+                <input class="input" type="date" id="actual-date" name="actual-date" />
+              </div>
+            </div>
+
+            <!-- Non-Conformity Form Link/Message -->
+            <div class="column is-one-third" id="nc-form-section" style="display: none;">
+              <div class="box nc-shadow-box" style="background: #f8f9fa;">
+                <a href="non-conformity.html" id="nc-form-link" class="button is-link is-fullwidth mb-2">
+                  Fill Non-Conformity Form
+                </a>
+                <p id="nc-form-msg" class="has-text-success" style="display: none; font-weight: bold;">
+                  Now you can fill the Non-Conformity form!
+                </p>
+              </div>
+             </div>
 
             <div class="field">
-              <label class="label">Audit Form Attachment</label>
+              <label class="label">Attachments</label>
                 <div class="control">
                   <div class="file has-name is-fullwidth">
                     <label class="file-label">
-                      <input class="file-input" type="file" id="audit-attachment" multiple/>
+                      <input class="file-input" type="file" id="audit-attachment" multiple 
+                        accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx,.ppt,.pptx"/>
                         <span class="file-cta">
                           <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -199,8 +235,7 @@
               <div id="audit-attachment-list" style="margin-top: 0.5em;"></div>
             </div>
 
-
-          </div>
+        </div>
         </form>
       </div>
     </div>
@@ -254,7 +289,7 @@
 
       <div id="nc-form-container" style="display: none;">
 
-      <form id="nc-form">
+      <form id="nc-form" action="your-action-url" method="post" target="_blank">
 
         <div class="table-container mt-5">
             <div class="buttons mt-4">
@@ -266,7 +301,9 @@
         <div class="columns is-multiline">
 
           <div class="column is-one-third">
-            <label class="label">Select Audit ID</label>
+            <label class="label">
+              Select Audit ID <span class="required">*</span>
+            </label>
             <div class="select is-fullwidth">
               <select id="nc-audit-id">
                 <option value="">Select Audit ID</option>
@@ -275,24 +312,32 @@
           </div>
 
           <div class="column is-one-third">
-            <label class="label">Non-Conformity ID</label>
+            <label class="label">
+              Non-Conformity ID <span class="required">*</span>
+            </label>
             <input class="input" type="text" id="nc-id" readonly />
           </div>
 
           <div class="column is-one-third">
-            <label class="label">Description</label>
+            <label class="label">
+              Description <span class="required">*</span>
+            </label>
               <textarea class="textarea limited-textarea" id="description" rows="5" placeholder="Up to 1000 words"></textarea>
                  <p class="help is-info" id="description-count">0 / 1000 words</p>
           </div>
           
           <div class="column is-one-third">
-            <label class="label">Clause No</label>
+            <label class="label">
+              Clause No <span class="required">*</span>
+            </label>
               <textarea class="textarea limited-textarea" id="clause-number" rows="5" placeholder="Up to 1000 words"></textarea>
                 <p class="help is-info" id="clause-number-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
-            <label class="label">NC Type</label>
+            <label class="label">
+              NC Type <span class="required">*</span>
+            </label>
             <div class="select is-fullwidth">
               <select id="nc-type" onchange="updateDueDate()">
                 <option value="">Select NC Type</option>
@@ -304,12 +349,16 @@
           </div>
           
           <div class="column is-one-third">
-            <label class="label">Due Date</label>
+            <label class="label">
+              Due Date <span class="required">*</span>
+            </label>
             <input class="input" type="date" id="due-date" />
           </div>
 
           <div class="column is-one-third">
-              <label class="label">Department</label>
+              <label class="label">
+                Department <span class="required">*</span>
+              </label>
               <div class="select is-fullwidth">
                 <select id="nc-department">
                   <option value="">Select Department</option>
@@ -324,7 +373,9 @@
             </div>
 
             <div class="column is-one-third">
-              <label class="label">Responsible Person</label>
+              <label class="label">
+                Responsible Person <span class="required">*</span>
+              </label>
                 <select id="responsible-person" class="input" style="width: 100%;">
                   <option value="">Select or type a name</option>
                   <option value="Alice">Alice</option>
@@ -334,7 +385,9 @@
             </div>
 
           <div class="column is-one-third">
-            <label class="label">Responsible Person Email</label>
+            <label class="label">
+              Responsible Person Email <span class="required">*</span>
+            </label>
               <select id="responsible-person-email" class="input" style="width: 100%;">
                 <option value="">Select or type an email</option>
                 <option value="alice@example.com">alice@example.com</option>
@@ -344,7 +397,9 @@
           </div>
 
           <div class="column is-one-third">
-            <label class="label">Location</label>
+            <label class="label">
+              Location <span class="required">*</span>
+            </label>
               <select id="Location-nc" multiple>
                 <option value="Noida">Noida</option>
                 <option value="Bangalore">Bangalore</option>
@@ -356,28 +411,35 @@
           </div>
 
           <div class="column is-one-third">
-              <label class="label">Corrective Action</label>
+              <label class="label">
+                Corrective Action <span class="required">*</span>
+              </label>
                 <textarea class="textarea limited-textarea" id="corrective-action" rows="5" placeholder="Up to 1000 words"></textarea>
                   <p class="help is-info" id="corrective-action-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
-              <label class="label">Preventive Action</label>
+              <label class="label">
+                Preventive Action <span class="required">*</span>
+              </label>
               <textarea class="textarea limited-textarea" id="preventive-action" rows="5" placeholder="Up to 1000 words"></textarea>
                 <p class="help is-info" id="preventive-action-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
-              <label class="label">Root Cause</label>
+              <label class="label">
+                Root Cause <span class="required">*</span>
+              </label>
                 <textarea class="textarea limited-textarea" id="root-cause" rows="5" placeholder="Up to 1000 words"></textarea>
                   <p class="help is-info" id="root-cause-count">0 / 1000 words</p>
           </div>
 
           <div class="column is-one-third">
-              <label class="label">Status</label>
+              <label class="label">
+                Status <span class="required">*</span>
+              </label>
               <div class="select is-fullwidth">
                 <select id="status-nc">
-                  <option value="">Select</option>
                   <option value="Open">Open</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Fixed">Fixed</option>
@@ -389,7 +451,7 @@
           </div>
 
           <div class="field">
-              <label class="label">NC Form Attachment</label>
+              <label class="label">Attachments</label>
                 <div class="control">
                   <div class="file has-name is-fullwidth">
                     <label class="file-label">
@@ -418,7 +480,7 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-  <script src="script.js"></script>
+  <script src="script1.js"></script>
  </body>
  </html>
  
