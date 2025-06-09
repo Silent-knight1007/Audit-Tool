@@ -13,7 +13,6 @@ function showSection(id) {
       document.getElementById(id).style.display = 'block';
 }
 
-
     // AUDIT JAVASCRIPT--------->
 
 function createNewAudit() {
@@ -326,7 +325,18 @@ function createNewNC() {
     document.getElementById('delete-selected-btn').disabled = true;
   }
   document.getElementById('saveBtn').innerText = selectedNCRow ? 'Update' : 'Save';
+ //window.open(window.location.pathname + '?showNCForm=1', '_blank', 'noopener');
+
+
 }
+
+/*window.onload = function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('showNCForm') === '1') {
+    document.getElementById('table-section').style.display = 'none';
+    document.getElementById('nc-form-container').style.display = 'block';
+  }
+}*/
 
 function generateNCId() {
   const auditId = document.getElementById('nc-audit-id').value;
@@ -550,6 +560,12 @@ function saveNC() {
   document.getElementById('nc-form-container').style.display = 'none';
   document.getElementById('saveBtn').innerText = 'Save';
   updateNCAuditDropdown();
+
+  /*if (window.opener && !window.opener.closed) {
+  window.opener.location.reload();
+}
+window.close();*/
+  
 }
 
 function updateDeleteButtonState() {
@@ -835,13 +851,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show NC form link/message only if status is 'executed'
     if (status === 'executed') {
       ncFormSection.style.display = 'block';
-      ncFormLink.style.display = 'inline';
-      ncFormMsg.style.display = 'block';
-      ncFormMsg.textContent = "Now you can fill the Non-Conformity form!";
     } else {
       ncFormSection.style.display = 'none';
-      ncFormLink.style.display = 'none';
-      ncFormMsg.style.display = 'none';
     }
   }
 
@@ -851,6 +862,68 @@ document.addEventListener('DOMContentLoaded', function() {
   // Listen for status changes
   statusSelect.addEventListener('change', updateFormFields);
 });
+
+const { MongoClient } = require('mongodb');
+const uri = "<mongodb+srv://poojapunyani:<db_password>@cluster0.tejvwyf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0>";
+const client = new MongoClient(uri);
+
+async function run() {
+    try {
+        await client.connect();
+        const db = client.db('your_database');
+        const collection = db.collection('your_collection');
+        // Perform DB operations here
+    } finally {
+        await client.close();
+    }
+}
+run().catch(console.error);
+
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.get('/api/items', async (req, res) => {
+    // Fetch items from MongoDB and send as JSON
+});
+
+app.post('/api/items', async (req, res) => {
+    // Insert new item into MongoDB
+});
+
+app.listen(3000, () => console.log('Server running on port 3000'));
+
+fetch('http://localhost:3000/api/items')
+    .then(response => response.json())
+    .then(data => {
+        // Use data in your frontend (e.g., display in table)
+    });
+
+// To post data:
+fetch('http://localhost:3000/api/items', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'Example', value: 123 })
+})
+.then(response => response.json())
+.then(data => {
+    // Handle response
+});
+
+
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/your-database-name', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+function isConnected() {
+  return !!client && !!client.topology && client.topology.isConnected();
+}
 
 
 
