@@ -1,4 +1,4 @@
-<!--05-06-2025-->
+<!--09-06-2025-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +56,7 @@
             Create New Audit
             </button>
 
-            <button id="select-all-btn" class="button-common blue-button">
+            <button id="select-all-btn" class="button-common blue-button" target="_blank">
              <label><input type="checkbox" id="select-all-checkbox" /> Select All</label>
             </button>
 
@@ -201,15 +201,13 @@
 
             <!-- Non-Conformity Form Link/Message -->
             <div class="column is-one-third" id="nc-form-section" style="display: none;">
-              <div class="box nc-shadow-box" style="background: #f8f9fa;">
-                <a href="non-conformity.html" id="nc-form-link" class="button is-link is-fullwidth mb-2">
-                  Fill Non-Conformity Form
+              <div class="box nc-shadow-box" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; min-height: 150px;">
+                <a href="non-conformity.html" id="nc-form-link" class="button is-link is-fullwidth" style="max-width: 250px;">
+                  Add Non-Conformity 
                 </a>
-                <p id="nc-form-msg" class="has-text-success" style="display: none; font-weight: bold;">
-                  Now you can fill the Non-Conformity form!
-                </p>
               </div>
-             </div>
+            </div>
+
 
             <div class="field">
               <label class="label">Attachments</label>
@@ -241,14 +239,14 @@
     </div>
   </section>
 
-  <!-- ================= NON-CONFORMITY ================= -->
+  <!-- ================= NON-CONFORMITY =================--> 
   <section id="non-conformity" class="content-section box section-spacing">
     <div class="container">
        <h2 class="title is-4">Non-Conformity</h2>
       <div class="table-container mt-5">
         <div class="button-container">
 
-            <button class="button-common blue-button" onclick="createNewNC();">
+            <button class="button-common blue-button" onclick="createNewNC();" target="_blank">
             Create New Non-Conformity
             </button>
 
