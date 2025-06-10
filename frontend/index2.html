@@ -1,0 +1,484 @@
+<!--09-06-2025-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onextel Audit Tool 1</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="style2.css"/>
+</head>
+<body onload="showSection('dashboard')">
+
+<!--NAVBAR-->
+  <nav class="navbar is-dark">
+    <div class="navbar-brand">
+      <a class="navbar-item">Onextel</a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" onclick="showSection('dashboard')">Dashboard</a>
+        <a class="navbar-item" onclick="showSection('audit-tool')">Audit Tool</a>
+        <a class="navbar-item" onclick="showSection('audit-plan')">Audit Plan</a>
+        <a class="navbar-item" onclick="showSection('non-conformity')">Non-Conformity</a>
+
+      </div>
+    </div>
+  </nav>
+  
+<!--DASHBOARD-->
+  <section id="dashboard" class="content-section box section-spacing">
+    <div class="container">
+      <h1 class="title">Welcome to Onextel Dashboard</h1>
+    </div>
+  </section>
+
+  <!--ABOUT AUDIT TOOL-->
+  <section id="audit-tool" class="content-section box section-spacing">
+    <div class="container">
+      <h1 class="title">About Onextel Audit Tool</h1>
+      <p>This tool is used for tracking and managing audit plans and non-conformities within Onextel systems.</p>
+    </div>
+  </section>
+
+  <!-- ================= AUDIT PLAN ================= -->
+  <section id="audit-plan" class="content-section box section-spacing">
+    <div class="container">
+      <h2 class="title is-4">Audit Plan</h2>
+      <div class="table-container mt-5">
+        <div class="button-container">
+
+            <button class="button-common blue-button" onclick="createNewAudit();">
+            Create New Audit
+            </button>
+
+            <button id="select-all-btn" class="button-common blue-button" target="_blank">
+             <label><input type="checkbox" id="select-all-checkbox" /> Select All</label>
+            </button>
+
+           <button id="delete-selected-btn" class="button-common red-button" onclick="deleteSelectedAudits()">
+            Delete
+           </button>
+
+
+        </div>
+        <h2 class="title is-5">Saved Audits</h2>
+        <table class="table is-striped is-fullwidth">
+          <thead>
+              <tr>
+              <th></th>
+              <th>Audit ID</th>
+              <th>Audit Type</th>
+              <th>Standards</th>
+              <th>Lead Auditor</th>
+              <th>Location</th>
+              <th>Audit Team</th>
+              <th>Planned Date</th>
+              <th>Status</th>
+              <th>Actual Date</th>
+            </tr>
+          </thead>
+          <tbody id="audit-table-body"></tbody>
+        </table>
+      </div>
+      
+      <div id="audit-form-container" style="display: none;">
+
+        <form id="audit-form" onsubmit="submitAudit(event)">
+
+          <div class="buttons mt-4">
+            <button type="submit" id=saveBtn class="button is-success">Save</button>
+            <button type="button" class="button is-warning" id="cancelBtn" onclick="cancelAudit()">Cancel</button>
+          </div>
+
+          <div class="columns is-multiline">
+
+            <div class="column is-one-third">
+              <label class="label">
+                Audit ID <span class="required">*</span>
+              </label>
+              <div class="control">
+                <input class="input" type="text" id="audit-id" name="auditId" readonly>
+              </div>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Audit Type <span class="required">*</span>
+              </label>
+              <div class="select is-fullwidth">
+                <select id="audit-type">
+                  <option>Internal</option>
+                  <option>External</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Standards <span class="required">*</span>
+              </label>
+              <select id="standards" multiple>
+                <option value="ISO 9001 : 2015">ISO 9001 : 2015</option>
+                <option value="ISO 27001 : 2023">ISO 27001 : 2023</option>
+                <option value="ISO 27701 : 2019">ISO 27701 : 2019</option>
+                <option value="ISO 22301 : 2019">ISO 22301 : 2019</option>
+                <option value="ISO 27017 : 2015">ISO 27017 : 2015</option>
+                <option value="ISO 27018 : 2015">ISO 27018 : 2015</option>
+              </select>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Lead Auditor <span class="required">*</span>
+              </label>
+              <input class="input" type="text" id="lead-auditor" />
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Location <span class="required">*</span>
+              </label>
+              <select id="Location-audit" multiple>
+                <option value="Noida">Noida</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Pune">Pune</option>
+                <option value="Dubai">Dubai</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Gurgaon">Gurgaon</option>
+              </select>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Audit Team <span class="required">*</span>
+              </label>
+                <select id="audit-team" multiple>
+                  <option value="Alice">Alice</option>
+                  <option value="Bob">Bob</option>
+                  <option value="Charlie">Charlie</option>
+                  <option value="David">David</option>
+                  <option value="Eve">Eve</option>
+                  <!-- Add more team members as needed -->
+                </select>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Planned Date <span class="required">*</span>
+              </label>
+              <input class="input" type="date" id="planned-date" />
+            </div>
+            
+            <!-- Status Field -->
+            <div class="column is-one-third">
+              <label class="label" for="status">
+                Status <span class="required">*</span>
+              </label>
+              <div class="select is-fullwidth">
+                <select id="status" name="status" required>
+                   <option value="" disabled selected>Select status</option>
+                   <option value="planned">Planned</option>
+                   <option value="executed">Executed</option>
+                   <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Actual Date Field -->
+            <div class="column is-one-third">
+              <label class="label" for="actual-date">
+                Actual Date <span id="actual-date-required" class="required" style="display: none;">*</span>
+              </label>
+              <div class="control">
+                <input class="input" type="date" id="actual-date" name="actual-date" />
+              </div>
+            </div>
+
+            <!-- Non-Conformity Form Link/Message -->
+            <div class="column is-one-third" id="nc-form-section" style="display: none;">
+              <div class="box nc-shadow-box" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; min-height: 150px;">
+                <a href="non-conformity.html" id="nc-form-link" class="button is-link is-fullwidth" style="max-width: 250px;">
+                  Add Non-Conformity 
+                </a>
+              </div>
+            </div>
+
+
+            <div class="field">
+              <label class="label">Attachments</label>
+                <div class="control">
+                  <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                      <input class="file-input" type="file" id="audit-attachment" multiple 
+                        accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx,.ppt,.pptx"/>
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose file(s) from your device…
+                          </span>
+                        </span>
+                      <span class="file-name" id="audit-attachment-name">
+                        No file uploaded
+                      </span>
+                   </label>
+                  </div>
+               </div>
+              <div id="audit-attachment-list" style="margin-top: 0.5em;"></div>
+            </div>
+
+        </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NON-CONFORMITY =================--> 
+  <section id="non-conformity" class="content-section box section-spacing">
+    <div class="container">
+       <h2 class="title is-4">Non-Conformity</h2>
+      <div class="table-container mt-5">
+        <div class="button-container">
+
+            <button class="button-common blue-button" onclick="createNewNC();" target="_blank">
+            Create New Non-Conformity
+            </button>
+
+            <button id="select-all-btn" class="button-common blue-button">
+             <label><input type="checkbox" id="nc-select-all" /> Select All</label>
+            </button>
+
+           <button id="delete-selected-btn" class="button-common red-button" onclick="deleteSelectedNC()">
+            Delete
+           </button>
+
+
+        </div>
+        <h2 class="title is-5">Saved Non-Conformities</h2>
+        <table class="table is-striped is-fullwidth">
+          <thead>
+            <tr>
+              <th></th>
+              <th>NC ID</th>
+              <th>Audit ID</th>
+              <th>Description</th>
+              <th>Clause No</th>
+              <th>NC-Type</th>
+              <th>Due Date</th>
+              <th>Department</th>
+              <th>Responsible Person</th>
+              <th>Responsible Person E-mail</th>
+              <th>Location</th>
+              <th>Corrective Action</th>
+              <th>Preventive Action</th>
+              <th>Root Cause</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="nc-table-body"></tbody>
+        </table>
+      </div>
+
+      <div id="nc-form-container" style="display: none;">
+
+      <form id="nc-form" action="your-action-url" method="post" target="_blank">
+
+        <div class="table-container mt-5">
+            <div class="buttons mt-4">
+            <button type="button" id=saveBtn class="button is-success" onclick="saveNC()">Save</button>
+            <button type="button" class="button is-warning" id="cancelBtn" onclick="cancelNC()">Cancel</button>
+          </div>
+        </div>
+
+        <div class="columns is-multiline">
+
+          <div class="column is-one-third">
+            <label class="label">
+              Select Audit ID <span class="required">*</span>
+            </label>
+            <div class="select is-fullwidth">
+              <select id="nc-audit-id">
+                <option value="">Select Audit ID</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <label class="label">
+              Non-Conformity ID <span class="required">*</span>
+            </label>
+            <input class="input" type="text" id="nc-id" readonly />
+          </div>
+
+          <div class="column is-one-third">
+            <label class="label">
+              Description <span class="required">*</span>
+            </label>
+              <textarea class="textarea limited-textarea" id="description" rows="5" placeholder="Up to 1000 words"></textarea>
+                 <p class="help is-info" id="description-count">0 / 1000 words</p>
+          </div>
+          
+          <div class="column is-one-third">
+            <label class="label">
+              Clause No <span class="required">*</span>
+            </label>
+              <textarea class="textarea limited-textarea" id="clause-number" rows="5" placeholder="Up to 1000 words"></textarea>
+                <p class="help is-info" id="clause-number-count">0 / 1000 words</p>
+          </div>
+
+          <div class="column is-one-third">
+            <label class="label">
+              NC Type <span class="required">*</span>
+            </label>
+            <div class="select is-fullwidth">
+              <select id="nc-type" onchange="updateDueDate()">
+                <option value="">Select NC Type</option>
+                <option value="Minor">Minor</option>
+                <option value="Major">Major</option>
+                <option value="Observation">Observation</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="column is-one-third">
+            <label class="label">
+              Due Date <span class="required">*</span>
+            </label>
+            <input class="input" type="date" id="due-date" />
+          </div>
+
+          <div class="column is-one-third">
+              <label class="label">
+                Department <span class="required">*</span>
+              </label>
+              <div class="select is-fullwidth">
+                <select id="nc-department">
+                  <option value="">Select Department</option>
+                  <option value="IT">IT</option>
+                  <option value="HR">HR</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Compliance">Compliance</option>
+                  <option value="Quality Assurance">Quality Assurance</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="column is-one-third">
+              <label class="label">
+                Responsible Person <span class="required">*</span>
+              </label>
+                <select id="responsible-person" class="input" style="width: 100%;">
+                  <option value="">Select or type a name</option>
+                  <option value="Alice">Alice</option>
+                  <option value="Bob">Bob</option>
+                  <option value="Charlie">Charlie</option>
+                </select>
+            </div>
+
+          <div class="column is-one-third">
+            <label class="label">
+              Responsible Person Email <span class="required">*</span>
+            </label>
+              <select id="responsible-person-email" class="input" style="width: 100%;">
+                <option value="">Select or type an email</option>
+                <option value="alice@example.com">alice@example.com</option>
+                <option value="bob@example.com">bob@example.com</option>
+                <option value="charlie@example.com">charlie@example.com</option>
+              </select>
+          </div>
+
+          <div class="column is-one-third">
+            <label class="label">
+              Location <span class="required">*</span>
+            </label>
+              <select id="Location-nc" multiple>
+                <option value="Noida">Noida</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Pune">Pune</option>
+                <option value="Dubai">Dubai</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Gurgaon">Gurgaon</option>
+              </select>
+          </div>
+
+          <div class="column is-one-third">
+              <label class="label">
+                Corrective Action <span class="required">*</span>
+              </label>
+                <textarea class="textarea limited-textarea" id="corrective-action" rows="5" placeholder="Up to 1000 words"></textarea>
+                  <p class="help is-info" id="corrective-action-count">0 / 1000 words</p>
+          </div>
+
+          <div class="column is-one-third">
+              <label class="label">
+                Preventive Action <span class="required">*</span>
+              </label>
+              <textarea class="textarea limited-textarea" id="preventive-action" rows="5" placeholder="Up to 1000 words"></textarea>
+                <p class="help is-info" id="preventive-action-count">0 / 1000 words</p>
+          </div>
+
+          <div class="column is-one-third">
+              <label class="label">
+                Root Cause <span class="required">*</span>
+              </label>
+                <textarea class="textarea limited-textarea" id="root-cause" rows="5" placeholder="Up to 1000 words"></textarea>
+                  <p class="help is-info" id="root-cause-count">0 / 1000 words</p>
+          </div>
+
+          <div class="column is-one-third">
+              <label class="label">
+                Status <span class="required">*</span>
+              </label>
+              <div class="select is-fullwidth">
+                <select id="status-nc">
+                  <option value="Open">Open</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Fixed">Fixed</option>
+                  <option value="Closed">Closed</option>
+                  <option value="Aborted">Aborted</option>
+                  <option value="On-Hold">On-Hold</option>
+                </select>
+              </div>
+          </div>
+
+          <div class="field">
+              <label class="label">Attachments</label>
+                <div class="control">
+                  <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                      <input class="file-input" type="file" id="nc-attachment" multiple/>
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose file(s) from your device…
+                          </span>
+                        </span>
+                      <span class="file-name" id="nc-attachment-name">
+                        No file uploaded
+                      </span>
+                   </label>
+                  </div>
+               </div>
+              <div id="nc-attachment-list" style="margin-top: 0.5em;"></div>
+          </div>
+
+
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="script2.js"></script>
+ </body>
+ </html>
+ 
